@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<h1>PixelBoard©</h1>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PixelBoard©</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+
+    #toolbar {
+      display: flex;
+      gap: 10px;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
+    canvas {
+      border: 1px solid #000;
+      background-color: #fff;
+    }
+
+    button {
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    select {
+      padding: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="toolbar">
+    <label for="color">Color:</label>
+    <input type="color" id="color" value="#000000">
+
+    <label for="size">Brush Size:</label>
+    <select id="size">
+      <option value="2">Small</option>
+      <option value="5" selected>Medium</option>
+      <option value="10">Large</option>
+    </select>
+
+    <button id="clear">Clear</button>
+  </div>
+  
+  <canvas id="whiteboard" width="800" height="500"></canvas>
+
+  <script>
+    // JavaScript for the Whiteboard
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+
+    // Toolbar elements
+    const colorPicker = document.getElementById('color');
+    const brushSize = document.getElementById('size');
+    const clearButton = document.getElementById('clear');
+
+    // Drawing state
+    let isDrawing = false;
+    let lastX = 0;
+    let lastY = 0;
+
+    // Set initial brush color and size
+    ctx.strokeStyle = colorPicker.value;
+    ctx.lineWidth = brushSize.value;
+
+    // Start drawing
+    canvas.addEventListener('mousedown', (e) => {
+      isDrawing = true;
+      [lastX, lastY] = [e.offsetX, e.offsetY];
+    });
+
+    // Draw on the canvas
+    canvas.addEventListener('mousemove', (e) => {
+      if (!isDrawing) return;
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(e.offsetX, e.offsetY);
+      ctx.stroke();
+      [lastX, lastY] = [e.offsetX, e.offsetY];
+    });
+
+    // Stop drawing
+    canvas.addEventListener('mouseup', () => (isDrawing = false));
+    canvas.addEventListener('mouseout', () => (isDrawing = false));
+
+    // Update brush color
+    colorPicker.addEventListener('input', () => {
+      ctx.strokeStyle = colorPicker.value;
+    });
+
+    // Update brush size
+    brushSize.addEventListener('change', () => {
+      ctx.lineWidth = brushSize.value;
+    });
+
+    // Clear the canvas
+    clearButton.addEventListener('click', () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+  </script>
+</body>
+</html>
